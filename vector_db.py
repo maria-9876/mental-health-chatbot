@@ -7,7 +7,8 @@ from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
-from chromadb.config import Settings as ChromaSettings
+from chromadb.config import Settings  # ✅ Correct one
+
  # ✅ Required for Streamlit-safe Chroma config
 
 # Constants
