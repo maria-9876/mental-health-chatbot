@@ -1,12 +1,20 @@
 import os
 os.environ["TRANSFORMERS_CACHE"] = "D:/huggingface_cache"
 os.environ["HF_HOME"] = "D:/huggingface_cache"
+# 🔧 Fix for Chroma sqlite3 issue on Streamlit Cloud
+try:
+    import pysqlite3
+    import sys
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+except ImportError:
+    pass
+
 
 import torch
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from chromadb.config import Settings  # ✅ Correct one
 
  # ✅ Required for Streamlit-safe Chroma config
