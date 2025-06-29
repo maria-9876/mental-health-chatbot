@@ -7,18 +7,24 @@ from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
-
+from chromadb.config import Settings  # ✅ Required for Streamlit-safe Chroma config
 
 # Constants
 DATA_FOLDER = "data/"
 CHROMA_DB_DIR = "chroma_db/"
 
-# Detect device (not used anymore but kept in case you want to use it elsewhere)
+# Safe settings to avoid server-mode crash
+chroma_settings = Settings(
+    persist_directory=CHROMA_DB_DIR,
+    anonymized_telemetry=False,
+    allow_reset=True
+)
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 def get_embeddings():
     """
-    Return HuggingFaceEmbeddings using model name string as expected by LangChain.
+    Return HuggingFaceEmbeddings using model name string.
     """
     return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
@@ -38,7 +44,8 @@ def create_vector_db():
     vector_db = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
-        persist_directory=CHROMA_DB_DIR
+        persist_directory=CHROMA_DB_DIR,
+        client_settings=chroma_settings  # ✅ Prevent crash on Streamlit Cloud
     )
     vector_db.persist()
     print("✅ Vector DB created and saved.")
@@ -56,6 +63,7 @@ def load_vector_db():
 
     vector_db = Chroma(
         persist_directory=CHROMA_DB_DIR,
-        embedding_function=embeddings
+        embedding_function=embeddings,
+        client_settings=chroma_settings  # ✅ Needed for Cloud environments
     )
     return vector_db
