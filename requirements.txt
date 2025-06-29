@@ -9,3 +9,4 @@ python-dotenv
 gTTS
 langchain-huggingface
 protobuf==5.29.2
+
