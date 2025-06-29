@@ -1,0 +1,27 @@
+# Virtual Environment
+env/
+
+# Ignore Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Environment variables
+.env
+
+# Streamlit & Vector DB
+chroma_db/
+*.sqlite3
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Logs & cache
+*.log
+*.csv
+logs/
+.cache/
+
+# VS Code settings (optional)
+.vscode/

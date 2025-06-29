@@ -1,0 +1,12 @@
+[theme]
+base = "dark"
+primaryColor = "#6c63ff"      # Soft violet accent
+backgroundColor = "#0e1117"   # Dark gray/black
+secondaryBackgroundColor = "#1c1e26"
+textColor = "#ffffff"
+font = "sans serif"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
