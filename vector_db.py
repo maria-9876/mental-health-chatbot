@@ -28,15 +28,14 @@ from chromadb.config import Settings
 
 from chromadb.config import Settings as ChromaSettings
 
+from chromadb.config import Settings as ChromaSettings
+
 chroma_settings = ChromaSettings(
     persist_directory=CHROMA_DB_DIR,
     anonymized_telemetry=False,
-    allow_reset=True,
-    chroma_api_impl="chromadb.api.local.LocalAPI",
-    chroma_server_host=None,
-    chroma_server_http_port=None,
-    chroma_server_ssl_enabled=False
+    allow_reset=True
 )
+
 
 
 
