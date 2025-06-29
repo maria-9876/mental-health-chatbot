@@ -18,13 +18,18 @@ CHROMA_DB_DIR = "chroma_db/"
 # Safe settings to avoid server-mode crash
 from chromadb.config import Settings
 
-chroma_settings = Settings(
+from chromadb.config import Settings as ChromaSettings
+
+chroma_settings = ChromaSettings(
     persist_directory=CHROMA_DB_DIR,
     anonymized_telemetry=False,
     allow_reset=True,
-    chroma_api_impl="chromadb.api.local.LocalAPI",  # ✅ This is crucial
-    chroma_server_host=None,  # ✅ No server will start
+    chroma_api_impl="chromadb.api.local.LocalAPI",
+    chroma_server_host=None,
+    chroma_server_http_port=None,
+    chroma_server_ssl_enabled=False
 )
+
 
 
 
