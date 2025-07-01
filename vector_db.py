@@ -28,7 +28,7 @@ CHROMA_DB_DIR = "chroma_db/"
 
 # ✅ Safe settings to avoid server-mode crash on Streamlit
 chroma_settings = Settings(
-   chroma_db_impl="duckdb+parquet"
+   chroma_db_impl="duckdb+parquet",
     persist_directory=CHROMA_DB_DIR,
     anonymized_telemetry=False,
     allow_reset=True
