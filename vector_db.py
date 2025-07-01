@@ -1,45 +1,40 @@
 import os
+import sys
+import torch
+
+# Set Hugging Face cache directory
 os.environ["TRANSFORMERS_CACHE"] = "D:/huggingface_cache"
 os.environ["HF_HOME"] = "D:/huggingface_cache"
+
 # 🔧 Fix for Chroma sqlite3 issue on Streamlit Cloud
 try:
     import pysqlite3
-    import sys
     sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 except ImportError:
     pass
 
-
-import torch
+# LangChain imports
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-from chromadb.config import Settings  # ✅ Correct one
 
- # ✅ Required for Streamlit-safe Chroma config
+# ChromaDB config for Streamlit Cloud
+from chromadb.config import Settings
 
 # Constants
 DATA_FOLDER = "data/"
 CHROMA_DB_DIR = "chroma_db/"
 
-# Safe settings to avoid server-mode crash
-from chromadb.config import Settings
-
-from chromadb.config import Settings as ChromaSettings
-
-from chromadb.config import Settings as ChromaSettings
-
-chroma_settings = ChromaSettings(
+# ✅ Safe settings to avoid server-mode crash on Streamlit
+chroma_settings = Settings(
+    chroma_api_impl="local",  # 🛑 CRITICAL: disables unsupported server mode
     persist_directory=CHROMA_DB_DIR,
     anonymized_telemetry=False,
     allow_reset=True
 )
 
-
-
-
-
+# Device config
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 def get_embeddings():
@@ -53,6 +48,7 @@ def create_vector_db():
     Load PDFs, split into chunks, embed, and store in Chroma vector DB.
     """
     print("🔄 Creating new vector DB from PDFs...")
+
     loader = DirectoryLoader(DATA_FOLDER, glob="*.pdf", loader_cls=PyPDFLoader)
     documents = loader.load()
 
@@ -62,11 +58,11 @@ def create_vector_db():
     embeddings = get_embeddings()
 
     vector_db = Chroma.from_documents(
-    documents=chunks,
-    embedding=embeddings,
-    persist_directory=CHROMA_DB_DIR,
-    client_settings=chroma_settings  # 👈 Required!
-)
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory=CHROMA_DB_DIR,
+        client_settings=chroma_settings
+    )
 
     vector_db.persist()
     print("✅ Vector DB created and saved.")
@@ -83,9 +79,9 @@ def load_vector_db():
     embeddings = get_embeddings()
 
     vector_db = Chroma(
-    persist_directory=CHROMA_DB_DIR,
-    embedding_function=embeddings,
-    client_settings=chroma_settings  # 👈 Required!
-)
+        persist_directory=CHROMA_DB_DIR,
+        embedding_function=embeddings,
+        client_settings=chroma_settings
+    )
 
     return vector_db
